@@ -64,6 +64,13 @@ li {
   padding: 1rem;
 }
 
+@media (max-width: 480px) {
+  .corner {
+    top: unset;
+    bottom: 0;
+  }
+}
+
 .img-button {
   max-width: 60px;
   max-height: 60px;
