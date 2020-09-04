@@ -1,5 +1,6 @@
 const pso2percent = {
   FIELDS: ['base', 'units-rings', 'weapon', 'weapon-affix', 'buffs', 'def', 'ele-weak', 'type'],
+  PERCENTS: [1, 2, 3, 4, 5, 6, 7, 12],
   DIGITS: 2,
   state: {},
   freedom: false,
@@ -82,14 +83,14 @@ const pso2percent = {
     }
     if (result >= 0) {
       document.getElementById('result').innerText = result.toFixed(pso2percent.DIGITS);
-      for (let i = 1; i <= 5; i++) {
-        document.getElementById('percent-' + String(i)).innerText = (result * 0.01 * i).toFixed(pso2percent.DIGITS);
-      }
+      pso2percent.PERCENTS.forEach(function (percentage) {
+        document.getElementById('percent-' + String(percentage)).innerText = (result * 0.01 * percentage).toFixed(pso2percent.DIGITS);
+      });
     } else {
       document.getElementById('result').innerText = '?';
-      for (let i = 1; i <= 5; i++) {
-        document.getElementById('percent-' + String(i)).innerText = '?';
-      }
+      pso2percent.PERCENTS.forEach(function (percentage) {
+        document.getElementById('percent-' + String(percentage)).innerText = '?';
+      });
     }
   },
   toggleFreedom: function () {
