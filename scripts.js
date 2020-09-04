@@ -121,5 +121,3 @@ const pso2percent = {
 };
 
 document.addEventListener('DOMContentLoaded', pso2percent.init);
-
-
