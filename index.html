@@ -1,0 +1,303 @@
+<!doctype html>
+  <head>
+    <meta charset="utf-8">
+    <title>PSO2 Percent</title>
+    <meta name="description" content="How much is 1%?">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="styles.css">
+  </head>
+  <body>
+    <div class="section">
+      <h1>PSO2: How much <span class="text-jp">ATK</span><span class="text-en hidden">PWR</span> is 1%?</h1>
+      I see this asked very often. In many cases it is more accurate to simply look at your own stats
+      instead of trusting some magic numbers and glossing over how things work.<br>
+      Might as well try to make this convenient for everyone.
+    </div>
+    <div class="section">
+      <h2>Calculate</h2>
+      <div class="row">
+        <div class="column">
+          Base <span class="text-jp">ATK</span><span class="text-en hidden">PWR</span>:
+        </div>
+        <input type="number" id="base-input" class="column" min="0">
+      </div>
+      <div class="row">
+        <div class="column">
+          Units & Rings <span class="text-jp">ATK</span><span class="text-en hidden">PWR</span>:
+        </div>
+        <input type="number" id="units-rings-input" class="column" min="0">
+      </div>
+      <div class="row">
+        <div class="column">
+          Weapon Base <span class="text-jp">ATK</span><span class="text-en hidden">PWR</span>:
+        </div>
+        <input type="number" id="weapon-input" class="column" min="0">
+      </div>
+      <div class="row">
+        <div class="column">
+          Weapon <span class="text-jp">Affix ATK</span><span class="text-en hidden">Augment PWR</span>:
+        </div>
+        <input type="number" id="weapon-affix-input" class="column" min="0">
+      </div>
+      <div class="row">
+        <div class="column">
+          Buffs %:
+        </div>
+        <input type="number" id="buffs-input" class="column" value="115.46" min="-100" step="0.01">
+      </div>
+      <div class="row">
+        <div class="column">
+          Enemy DEF:
+        </div>
+        <input type="number" id="def-input" class="column" value="356" min="0">
+      </div>
+      <div class="row">
+        <div class="column">
+          Enemy Element Weak %:
+        </div>
+        <input type="number" id="ele-weak-input" class="column" value="20" min="-100" step="0.01">
+      </div>
+      <div class="row">
+        <div class="column">
+          Attack type:
+        </div>
+        <select id="type-input" class="column">
+          <option value="photon-art">Photon Art</option>
+          <option value="tech">Tech</option>
+        </select>
+      </div>
+
+      <h4>Effective <span class="text-jp">ATK</span><span class="text-en hidden">PWR</span></h4>
+      <div class="row">
+          <div class="column text-center">(</div>
+          <div class="column text-center">(</div>
+          <div class="column text-center">
+            <div id="base" class="column">?</div>
+            <div class="column"><small>Base <span class="text-jp">ATK</span><span class="text-en hidden">PWR</span></small></div>
+          </div>
+          <div class="column text-center">×</div>
+          <div class="column text-center">
+            <div id="buffs" class="column">?%</div>
+            <div class="column"><small>Buffs</small></div>
+          </div>
+          <div class="column text-center">)</div>
+          <div class="column text-center">+</div>
+          <div class="column text-center">
+            <div id="units-rings" class="column">?</div>
+            <div class="column"><small>Units & Rings <span class="text-jp">ATK</span><span class="text-en hidden">PWR</span></small></div>
+          </div>
+          <div class="column text-center">+</div>
+          <div class="column text-center">
+            <div id="weapon" class="column">?</div>
+            <div class="column"><small>Weapon Base <span class="text-jp">ATK</span><span class="text-en hidden">PWR</span></small></div>
+          </div>
+          <div class="column text-center">+</div>
+          <div class="column text-center">
+            <div id="weapon-affix" class="column">?</div>
+            <div class="column"><small>Weapon <span class="text-jp">Affix ATK</span><span class="text-en hidden">Augment PWR</span></small></div>
+          </div>
+          <div class="column text-center">−</div>
+          <div class="column text-center">
+            <div id="def" class="column">?</div>
+            <div class="column"><small>Enemy DEF</small></div>
+          </div>
+          <div class="column text-center">)</div>
+          <div class="column text-center ele-damage">+</div>
+          <div class="column text-center ele-damage">(</div>
+          <div class="column text-center ele-damage">
+            <div id="weapon-2" class="column">?</div>
+            <div class="column"><small>Weapon Base <span class="text-jp">ATK</span><span class="text-en hidden">PWR</span></small></div>
+          </div>
+          <div class="column text-center ele-damage">×</div>
+          <div class="column text-center ele-damage">
+            <div class="column">60%</div>
+            <div class="column"><small>Weapon Attribute</small></div>
+          </div>
+          <div class="column text-center ele-damage">×</div>
+          <div class="column text-center ele-damage">
+            <div id="ele-weak" class="column">?%</div>
+            <div class="column"><small>Enemy Element Weak</small></div>
+          </div>
+          <div class="column text-center ele-damage">)</div>
+      </div>
+      <div class="text-center">= <strong><span id="result">?</span></strong></div>
+
+      <div class="table">
+        <div class="row">
+          <div class="column text-center"><strong>%</strong></div>
+          <div class="column text-center"><strong><span class="text-jp">ATK</span><span class="text-en hidden">PWR</span></strong></div>
+        </div>
+        <div class="row">
+          <div class="column text-center">1%</div>
+          <div id="percent-1" class="column text-center"></div>
+        </div>
+        <div class="row">
+          <div class="column text-center">2%</div>
+          <div id="percent-2" class="column text-center"></div>
+        </div>
+        <div class="row">
+          <div class="column text-center">3%</div>
+          <div id="percent-3" class="column text-center"></div>
+        </div>
+        <div class="row">
+          <div class="column text-center">4%</div>
+          <div id="percent-4" class="column text-center"></div>
+        </div>
+        <div class="row">
+          <div class="column text-center">5%</div>
+          <div id="percent-5" class="column text-center"></div>
+        </div>
+      </div>
+    </div>
+    <div class="section">
+      <h2>Explanation</h2>
+
+      <h3>Base <span class="text-jp">ATK</span><span class="text-en hidden">PWR</span></h3>
+      The <span class="text-jp">ATK</span><span class="text-en hidden">PWR</span> value shown in the character status window
+      with no weapon, units, or rings equipped.<br>
+      <strong>Note that if <span class="text-jp">ATK Up SSAs</span><span class="text-en hidden">PWR Up SGAs</span> are used on units,
+      they should be included here instead as they are affected by buffs.</strong>
+
+      <h3>Units & Rings <span class="text-jp">ATK</span><span class="text-en hidden">PWR</span></h3>
+      <span class="text-jp">ATK</span><span class="text-en hidden">PWR</span> from units and rings including
+      <span class="text-jp">affixes</span><span class="text-en hidden">augments</span>
+      <strong>but excluding <span class="text-jp">SSAs</span><span class="text-en hidden">SGAs</span></strong>.
+
+      <h3>Weapon Base <span class="text-jp">ATK</span><span class="text-en hidden">PWR</span></h3>
+      <span class="text-jp">ATK</span><span class="text-en hidden">PWR</span> of the weapon used excluding
+      <span class="text-jp">affixes</span><span class="text-en hidden">augments</span>.
+
+      <h3>Weapon <span class="text-jp">Affix ATK</span><span class="text-en hidden">Augment PWR</span></h3>
+      <span class="text-jp">ATK</span><span class="text-en hidden">PWR</span> from 
+      <span class="text-jp">affixes</span><span class="text-en hidden">augments</span> on the weapon.
+
+      <h3>Buffs %</h3>
+      Percentage increase from <span class="text-jp">ATK</span><span class="text-en hidden">PWR</span> buffs.
+      This applies to base <span class="text-jp">ATK</span><span class="text-en hidden">PWR</span> only.
+
+      <div class="table">
+        <div class="row">
+          <div class="column text-center">Lv.17 Shifta (no skills)</div>
+          <div class="column text-center">+19.7%</div>
+        </div>
+        <div class="row">
+          <div class="column text-center"><span class="text-jp">Team</span><span class="text-en hidden">Alliance</span> tree</div>
+          <div class="column text-center">+20%</div>
+        </div>
+        <div class="row">
+          <div class="column text-center">Shifta Drink</div>
+          <div class="column text-center">+50%</div>
+        </div>
+        <div class="row">
+          <div class="column text-center"><strong>Total</strong></div>
+          <div class="column text-center">+115.46%</div>
+        </div>
+      </div>
+
+      <h3>Enemy DEF</h3>
+      This value is not visible but can be measured by experiments.
+      <strong>Most enemies at the same level have the same DEF value.</strong>
+      There are exceptions with their DEF values scaled up or down from the level reference.
+      For an example case which everyone loves, Lv.20 VR Training Rockbear has 100 DEF.
+      
+      <div class="table">
+        <div class="row">
+          <div class="column text-center"><strong>Enemy Level</strong></div>
+          <div class="column text-center"><strong>Reference DEF</strong></div>
+        </div>
+        <div class="row">
+          <div class="column text-center">20</div>
+          <div class="column text-center">100</div>
+        </div>
+        <div class="row">
+          <div class="column text-center">80</div>
+          <div class="column text-center">315</div>
+        </div>
+        <div class="row">
+          <div class="column text-center">85</div>
+          <div class="column text-center">324</div>
+        </div>
+        <div class="row">
+          <div class="column text-center">91</div>
+          <div class="column text-center">340</div>
+        </div>
+        <div class="row">
+          <div class="column text-center">96</div>
+          <div class="column text-center">356</div>
+        </div>
+        <div class="row">
+          <div class="column text-center">100</div>
+          <div class="column text-center">?</div>
+        </div>
+      </div>
+      
+      <h3>Enemy Element Weak %</h3>
+      This is the weakness multiplier if the enemy is weak to weapon element. Set to 0% if neutral.<br>
+      <strong>Most enemies have 20% element weakness.</strong> There are many special cases deviating from the norm, however.<br>
+      This has no effect on techs.
+      Accounting for element weakness does not really matter for techs in this calculation as it is just another multiplier applied to the final damage.
+
+      <h3>Attack type</h3>
+      This distinction has to be made because <strong>techs do not use attribute value of the weapon at all</strong>, thus weapon element damage is zero.
+      On the other hand, Photon Arts and other <strong>non-tech attacks will deal full damage in their original damage types, plus another 60% 
+      (assuming 60 attribute) of weapon base <span class="text-jp">ATK</span><span class="text-en hidden">PWR</span> as elemental.</strong>
+
+      <h3>Summoners</h3>
+      Summoners are weird. Values used in the calculation are slightly different so adjustments have to be made.
+      Some of these might not be 100% verified but they should be mostly accurate.
+      <ul>
+        <li>
+          <strong>Base <span class="text-jp">ATK</span><span class="text-en hidden">PWR</span></strong> includes:
+          <ul>
+            <li>
+              Player <span class="text-jp">ATK</span><span class="text-en hidden">PWR</span> value without weapon equipped.
+              This also includes units, unit <span class="text-jp">affixes</span><span class="text-en hidden">augments</span>, and rings.
+            </li>
+            <li>Pet <span class="text-jp">Bonus</span><span class="text-en hidden">Plus</span> Stats (the extra stats gained by feeding pets).</li>
+            <li>Conditional stats gained from <span class="text-jp">candies</span><span class="text-en hidden">sweets</span> (Support Roll).</li>
+          </ul>
+        </li>
+        <li>
+          <strong>Units & Rings <span class="text-jp">ATK</span><span class="text-en hidden">PWR</span></strong>: 0. Yes, zero.
+        </li>
+        <li>
+          <strong>Weapon Base <span class="text-jp">ATK</span><span class="text-en hidden">PWR</span></strong>:
+          Pet's base stats excluding Pet <span class="text-jp">Bonus</span><span class="text-en hidden">Plus</span> Stats.
+        </li>
+        <li>
+          <strong>Weapon <span class="text-jp">Affix ATK</span><span class="text-en hidden">Augment PWR</span></strong>:
+          Flat stats gained from <span class="text-jp">candies</span><span class="text-en hidden">sweets</span> (Cookies).
+        </li>
+      </ul>
+
+      <h3>Compromises</h3>
+      There are some assumptions and compromises made to remove some of the complexity involved.<br>
+      <ul>
+        <li>
+          The formula used is just a part of the damage formula, thus the effective 
+          <span class="text-jp">ATK</span><span class="text-en hidden">PWR</span> value shown is not representative of the actual damage done
+          as it needs to go through another set of multipliers from skills, potentials, and many other stuff.
+          The results are simply good estimates for how much
+          <span class="text-jp">ATK</span><span class="text-en hidden">PWR</span> is needed to improve overall damage by a certain percentage.
+        </li>
+        <li>
+          Part damage multiplier is assumed to be 1 which is the most generic situation.
+          This value changes against enemies with weaknesses/resistances against specific damage types.
+          A common example is the headshot multiplier.
+          This affects the ratio between weapon damage (affected by this multiplier) and weapon element damage (affected by element weak % instead).<br>
+          I could totally add this as another input field, but I felt like it would be a pain to explain what it is.
+        </li>
+        <li>
+          There is no damage variance. The resulting value is the maximum possible, AKA a critical hit.
+        </li>
+      </ul>
+
+      <h3>Acknowledgements</h3>
+      I would like to thank everyone who keeps asking the same question over and over.
+    </div>
+    <div class="corner">
+      <input id="freedom-button" type="image" src="freedomrappy.png" alt="FREEDOM TOGGLE" class="img-button inactive">
+    </div>
+    <script src="scripts.js"></script>
+  </body>
+</html>
