@@ -248,7 +248,7 @@
       <h3>Enemy Element Weak %</h3>
       This is the weakness multiplier if the enemy is weak to weapon element. Set to 0% if neutral.<br>
       <strong>Most enemies have 20% element weakness.</strong> There are many special cases deviating from the norm, however.<br>
-      This has no effect on techs.
+      This has no effect on techs for our purpose.
       Accounting for element weakness does not really matter for techs in this calculation as it is just another multiplier applied to the final damage.
 
       <h3>Attack type</h3>
@@ -256,7 +256,7 @@
       On the other hand, Photon Arts and other <strong>non-tech attacks will deal full damage in their original damage types, plus another 60% 
       (assuming 60 attribute) of weapon base <span class="text-jp">ATK</span><span class="text-en hidden">PWR</span> as elemental.</strong>
 
-      <h3>Summoners</h3>
+      <h3>Summoner</h3>
       Summoners are weird. Values used in the calculation are slightly different so adjustments have to be made.
       Some of these might not be 100% verified but they should be mostly accurate.
       <ul>
@@ -281,6 +281,20 @@
         <li>
           <strong>Weapon <span class="text-jp">Affix ATK</span><span class="text-en hidden">Augment PWR</span></strong>:
           Flat stats gained from <span class="text-jp">candies</span><span class="text-en hidden">sweets</span> (Cookies).
+        </li>
+      </ul>
+
+      <h3>Luster</h3>
+      Luster adds yet another exception to the calculation, making this attempt at simplifying things more complicated for some reason.
+      With Non-element, 70% of weapon base <span class="text-jp">ATK</span><span class="text-en hidden">PWR</span> is added in exchange for
+      removing weapon element damage entirely. This can be simulated in a few ways, though for now I will just recommend one:
+      <ul>
+        <li>
+          Add 70% of weapon base <span class="text-jp">ATK</span><span class="text-en hidden">PWR</span> to
+          Weapon <span class="text-jp">Affix ATK</span><span class="text-en hidden">Augment PWR</span> (including decimal digits).
+        </li>
+        <li>
+          Switch attack type to tech. This removes weapon element damage from the calculation.
         </li>
       </ul>
 
